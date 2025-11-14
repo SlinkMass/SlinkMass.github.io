@@ -1,91 +1,62 @@
-import { useState, useEffect } from "react";
+import React from "react";
 import "./App.css";
 
-interface ProjectType {
-  id: string;           // unique id
-  name: string;
-  description: string;
-  link: string;
-  isGitHub?: boolean;   // optional flag
-}
-
-const staticProjects: ProjectType[] = [
-  {
-    id: "moremusic",
-    name: "MoreMusic",
-    description: "Discover random music genres and songs, powered by Spotify API.",
-    link: "https://moremusic.theolouis.shop",
-  },
-  {
-    id: "portfolio",
-    name: "This Portfolio",
-    description: "My personal website showing projects and experience.",
-    link: "https://theolouis.shop",
-  },
-];
-
-interface Repo {
-  id: number;
-  name: string;
-  html_url: string;
-  description: string | null;
-}
+import moremusicImg from "./assets/moremusic.png";
+import mlMinesweeperImg from "./assets/ML-minesweeper.png";
 
 function App() {
-  const [projects, setProjects] = useState<ProjectType[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    // Fetch GitHub repos
-    fetch("https://api.github.com/users/SlinkMass/repos")
-      .then((res) => res.json())
-      .then((data) => {
-        let githubProjects: ProjectType[] = [];
-        if (Array.isArray(data)) {
-          githubProjects = data.map((repo: Repo) => ({
-            id: String(repo.id),
-            name: repo.name,
-            description: repo.description || "No description provided.",
-            link: repo.html_url,
-            isGitHub: true,
-          }));
-        } else {
-          console.error("Unexpected data from GitHub API:", data);
-        }
-        setProjects([...staticProjects, ...githubProjects]);
-      })
-      .catch((err) => {
-        console.error("Failed to fetch GitHub repos:", err);
-        setProjects(staticProjects); // fallback to static projects only
-      })
-      .finally(() => setLoading(false));
-  }, []);
-
-  if (loading) return <p>Loading projects...</p>;
-
   return (
-    <>
-      <h1>My Projects!</h1>
-      <div className="container">
-        {projects.map((project) => (
-          <div className="row" key={project.id}>
-            <div className="col">
-              <div className="project-card">
-                <h2>{project.name}</h2>
-                <p>{project.description}</p>
-                <a
-                  href={project.link}
-                  target={project.isGitHub ? "_blank" : "_self"}
-                  rel={project.isGitHub ? "noopener noreferrer" : undefined}
-                >
-                  {project.isGitHub ? "View on GitHub" : "Visit"}
-                </a>
-              </div>
+    <div className="App bg-dark text-light min-vh-100 d-flex flex-column justify-content-center align-items-center">
+      <h1 className="mb-5">My Projects</h1>
+
+      <div className="row g-4 w-75">
+        {/* MoreMusic Project */}
+        <div className="col-md-6">
+          <div className="card bg-secondary text-light h-100">
+            <img
+              src={moremusicImg}
+              className="card-img-top img-fluid"
+              alt="MoreMusic"
+              style={{ maxHeight: "200px", objectFit: "contain" }}
+            />
+            <div className="card-body d-flex flex-column justify-content-between">
+              <h5 className="card-title">MoreMusic</h5>
+              <p className="card-text">A music discovery app hosted on Railway.</p>
+              <a
+                href="https://moremusic.theolouis.shop"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn btn-primary mt-2"
+              >
+                Visit Project
+              </a>
             </div>
           </div>
-        ))}
+        </div>
+
+        {/* ML Minesweeper Project */}
+        <div className="col-md-6">
+          <div className="card bg-secondary text-light h-100">
+            <img
+              src={mlMinesweeperImg}
+              className="card-img-top img-fluid"
+              alt="ML Minesweeper"
+              style={{ maxHeight: "200px", objectFit: "contain" }}
+            />
+            <div className="card-body d-flex flex-column justify-content-between">
+              <h5 className="card-title">ML Minesweeper</h5>
+              <p className="card-text">A machine learning powered Minesweeper project.</p>
+              <a
+                href="#"
+                className="btn btn-primary mt-2 disabled"
+              >
+                Coming Soon
+              </a>
+            </div>
+          </div>
+        </div>
       </div>
-    </>
+    </div>
   );
 }
 
