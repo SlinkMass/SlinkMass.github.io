@@ -14,18 +14,23 @@ function App() {
   const [repos, setRepos] = useState<Repo[]>([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    fetch("https://api.github.com/users/SlinkMass/repos")
-      .then((res) => res.json())
-      .then((data: Repo[]) => {
+useEffect(() => {
+  fetch("https://api.github.com/users/SlinkMass/repos")
+    .then((res) => res.json())
+    .then((data) => {
+      if (Array.isArray(data)) {
         setRepos(data);
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.error("Failed to fetch repos:", err);
-        setLoading(false);
-      });
-  }, []);
+      } else {
+        console.error("Unexpected data from GitHub API:", data);
+        setRepos([]);
+      }
+      setLoading(false);
+    })
+    .catch((err) => {
+      console.error("Failed to fetch repos:", err);
+      setLoading(false);
+    });
+}, []);
 
   if (loading) return <p>Loading projects...</p>;
 
